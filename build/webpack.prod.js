@@ -15,17 +15,6 @@ const config = merge(commonConfig, {
     }),
     new webpack.HashedModuleIdsPlugin()
   ],
-  // optimization: {
-  //   splitChunks: {
-  //     cacheGroups: {
-  //       commons: {
-  //         name: "commons",
-  //         chunks: "initial",
-  //         minChunks: 2
-  //       }
-  //     }
-  //   }
-  // }
   performance: {
     maxEntrypointSize: 400000,
     maxAssetSize: 800000

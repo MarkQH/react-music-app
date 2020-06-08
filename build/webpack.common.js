@@ -12,7 +12,7 @@ const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   entry: {
-    main: path.join(__dirname, '../src/main.js'),
+    main: path.join(__dirname, '../src/index.js'),
   },
   output: {
     path: path.join(__dirname, '../dist'),
@@ -88,10 +88,10 @@ module.exports = {
       template: `${srcDir}/index.html`,
     }),
     new CopyWebpackPlugin([
-      {
-        from: `${srcDir}/assets/images/nowthen.jpg`,
-        to: 'nowthen.jpg',
-      },
+      // {
+      //   from: `${srcDir}/assets/images/nowthen.jpg`,
+      //   to: 'nowthen.jpg',
+      // },
     ]),
   ],
   resolve: {
