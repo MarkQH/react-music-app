@@ -5,7 +5,7 @@ import Loading from '@/components/loading';
 import Scroll from '@/components/scroll/index';
 import {connect} from 'react-redux';
 import  LazyLoad, {forceCheck} from 'react-lazyload';
-
+import { renderRoutes } from 'react-router-config';
 import {
   NavContainer,
   ListContainer,
@@ -56,6 +56,10 @@ function Singers(props) {
     pullDownRefreshDispatch(category, alpha);
   };
 
+  const enterDetail = (id) => {
+    props.history.push(`/singer/${id}`);
+  };
+
   const lazyImg = require('@/assets/img/singer.png');
 
   const renderSingerList = () => {
@@ -65,7 +69,10 @@ function Singers(props) {
         {
           list.map ((item, index) => {
             return (
-              <ListItem key={item.accountId+""+index}>
+              <ListItem
+                key={item.accountId+""+index}
+                onClick={() => enterDetail(item.id)}
+              >
                 <div className="img_wrapper">
                   <LazyLoad placeholder={<img width="100%" height="100%" src={`${list[0].picUrl}?300x300`} alt="music"/>}>
                     <img src={`${item.picUrl}?param=300x300`} width="100%" height="100%" alt="music"/>
@@ -108,6 +115,7 @@ function Singers(props) {
         </Scroll>
         <Loading show={enterLoading}></Loading>
       </ListContainer>
+      { renderRoutes(props.route.routes) }
     </div>
   )
 }

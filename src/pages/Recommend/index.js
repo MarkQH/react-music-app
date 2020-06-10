@@ -7,6 +7,7 @@ import { Content } from "./style.js";
 import { connect } from "react-redux";
 import { forceCheck } from "react-lazyload";
 import * as actionTypes from './store/actionCreators';
+import { renderRoutes } from 'react-router-config';
 
 function Recommend(props) {
 
@@ -31,10 +32,13 @@ function Recommend(props) {
       <Scroll className="list" onScroll={forceCheck}>
         <div>
           <Slider bannerList={bannerListJS}/>
-          <RecommendList recommendList={recommendListJS}></RecommendList>
+          <RecommendList
+            recommendList={recommendListJS}
+          />
         </div>
       </Scroll>
       {enterLoading ? <Loading/> : null}
+      { renderRoutes(props.route.routes) }
     </Content>
   );
 }
