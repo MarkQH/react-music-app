@@ -1,7 +1,7 @@
 {
   "name": "react_spa",
   "version": "1.0.0",
-  "description": "🚀react 单页🚀",
+  "description": "react 单页音乐app",
   "keywords": [
     "react-web-pro",
     "react",
@@ -12,9 +12,7 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --color --inline --progress --config build/webpack.dev.js",
-    "build": "NODE_ENV=production webpack --progress --config ./build/webpack.prod.js",
-    "build:report": "NODE_ENV=production webpack --progress --config ./build/webpack.prod.js",
-    "build:watch": "NODE_ENV=production webpack --progress --config ./build/webpack.prod.js"
+    "build": "webpack --progress --config ./build/webpack.prod.js"
   },
   "dependencies": {
     "axios": "^0.19.0",
