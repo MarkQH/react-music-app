@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Redirect } from "react-router-dom";
 import Home from '@/pages/Home';
-import Recommend from '@/pages/Recommend';
-import Singers from '@/pages/Singers';
-import Singer from '@/pages/Singer';
-import Rank from '@/pages/Rank';
-import Album from '@/pages/Album';
+const Recommend = lazy (() => import ("@/pages/Recommend/"));
+const Singers = lazy (() => import ("@/pages/Singers/"));
+const Rank = lazy (() => import ("@/pages/Rank/"));
+const Album = lazy (() => import ("@/pages/Album/"));
+const Singer = lazy (() => import ("@/pages/Singer/"));
+const Search = lazy (() => import ("@/pages/Search/"));
+
+const SuspenseComponent = Component => props => {
+  return (
+    <Suspense fallback={null}>
+      <Component {...props}></Component>
+    </Suspense>
+  )
+}
 
 export default [
   {
@@ -21,33 +30,39 @@ export default [
       },
       {
         path: '/recommend',
-        component: Recommend,
+        component: SuspenseComponent(Recommend),
         routes: [
           {
             path: "/recommend/:id",
-            component: Album
+            component: SuspenseComponent(Album)
           }
         ]
       },
       {
         path: '/singers',
-        component: Singers,
+        component: SuspenseComponent(Singers),
         routes: [
           {
             path: '/singers/:id',
-            component: Singer
+            component: SuspenseComponent(Singer)
           }
         ]
       },
       {
         path: '/rank',
-        component: Rank,
+        component: SuspenseComponent(Rank),
         routes: [
           {
             path: '/rank/:id',
-            component: Album
+            component: SuspenseComponent(Album)
           }
         ]
+      },
+      {
+        path: '/search',
+        exact: true,
+        key: 'search',
+        component: SuspenseComponent(Search)
       }
     ]
   }

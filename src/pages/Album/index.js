@@ -4,6 +4,8 @@ import { CSSTransition } from 'react-transition-group';
 import  Header  from '@/components/header';
 import Scroll from '@/components/scroll';
 import Loading from '@/components/loading';
+import SongsList from '@/components/song-list';
+import MusicNote from "@/components/music-note";
 import { getCount, isEmptyObject, getName } from '@/utils';
 import { HEADER_HEIGHT } from '@/api/config';
 import style from "@/assets/global-style";
@@ -11,11 +13,13 @@ import { connect } from 'react-redux';
 
 import { getAlbumList, changeEnterLoading } from './store/actionCreators';
 
+// 映射Redux全局的state到组件的props上
 const mapStateToProps = (state) => ({
   currentAlbum: state.getIn(['album', 'currentAlbum']),
   enterLoading: state.getIn(['album', 'enterLoading']),
+  songsCount: state.getIn(['player', 'playList']).size
 });
-
+// 映射dispatch到props上
 const mapDispatchToProps = (dispatch) => {
   return {
     getAlbumDataDispatch(id) {
@@ -26,13 +30,14 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 function Album(props) {
-
   const [showStatus, setShowStatus] = useState(true);
   const [title, setTitle] = useState("歌单");
-  const [isMarquee, setIsMarquee] = useState(false);
-  const headerEl = useRef();
+  const [isMarquee, setIsMarquee] = useState(false);//是否跑马灯
 
-  const { currentAlbum: currentAlbumImmutable, enterLoading } = props;
+  const headerEl = useRef();
+  const musicNoteRef = useRef();
+
+  const { currentAlbum: currentAlbumImmutable, enterLoading, songsCount } = props;
   const { getAlbumDataDispatch } = props;
 
   const id = props.match.params.id;
@@ -49,21 +54,25 @@ function Album(props) {
 
   const handleScroll = useCallback((pos) => {
     let minScrollY = -HEADER_HEIGHT;
-    let precent = Math.abs(pos.y / minScrollY);
+    let percent = Math.abs(pos.y / minScrollY);
     let headerDom = headerEl.current;
-
-    if(pos.y < minScrollY) {
-      headerDom.style.backgroundColor = style['theme-color'];
-      headerDom.style.opacity = Math.min(1, (precent - 1)/2);
+    //滑过顶部的高度开始变化
+    if (pos.y < minScrollY) {
+      headerDom.style.backgroundColor = style["theme-color"];
+      headerDom.style.opacity = Math.min(1, (percent - 1) / 2);
       setTitle(currentAlbum.name);
       setIsMarquee(true);
     } else {
       headerDom.style.backgroundColor = "";
       headerDom.style.opacity = 1;
-      setTitle('歌单');
+      setTitle("歌单");
       setIsMarquee(false);
     }
   }, [currentAlbum]);
+
+  const musicAnimation = (x, y) => {
+    musicNoteRef.current.startAnimation({ x, y });
+  };
 
   const renderTopDesc = () => {
     return (
@@ -90,7 +99,7 @@ function Album(props) {
         </div>
       </TopDesc>
     )
-  };
+  }
 
   const renderMenu = () => {
     return (
@@ -115,40 +124,6 @@ function Album(props) {
     )
   };
 
-  const renderSongList = () => {
-    return (
-      <SongList>
-        <div className="first_line">
-          <div className="play_all">
-            <i className="iconfont">&#xe6e3;</i>
-            <span>播放全部 <span className="sum">(共{currentAlbum.tracks.length}首)</span></span>
-          </div>
-          <div className="add_list">
-            <i className="iconfont">&#xe62d;</i>
-            <span>收藏({getCount(currentAlbum.subscribedCount)})</span>
-          </div>
-        </div>
-        <SongItem>
-          {
-            currentAlbum.tracks.map((item, index) => {
-              return (
-                <li key={index}>
-                  <span className="index">{index + 1}</span>
-                  <div className="info">
-                    <span>{item.name}</span>
-                    <span>
-                      {getName(item.ar)} - {item.al.name}
-                    </span>
-                  </div>
-                </li>
-              )
-            })
-          }
-        </SongItem>
-      </SongList>
-    )
-  }
-
   return (
     <CSSTransition
       in={showStatus}
@@ -158,15 +133,9 @@ function Album(props) {
       unmountOnExit
       onExited={props.history.goBack}
     >
-      <Container>
-        <Header
-          ref={ headerEl }
-          title={ "返回" }
-          handleClick={ handleBack }
-          isMarquee={ isMarquee }
-        ></Header>
-        {
-          !isEmptyObject(currentAlbum) ?
+      <Container play={songsCount}>
+        <Header ref={headerEl} title={title} handleClick={handleBack} isMarquee={isMarquee}></Header>
+        {!isEmptyObject(currentAlbum) ?
           (
             <Scroll
               bounceTop={false}
@@ -175,16 +144,23 @@ function Album(props) {
               <div>
                 { renderTopDesc() }
                 { renderMenu() }
-                { renderSongList() }
+                <SongsList
+                  songs={currentAlbum.tracks}
+                  collectCount={currentAlbum.subscribedCount}
+                  showCollect={true}
+                  showBackground={true}
+                  musicAnimation={musicAnimation}
+                ></SongsList>
               </div>
             </Scroll>
           )
           : null
         }
         { enterLoading ? <Loading></Loading> : null}
+        <MusicNote ref={musicNoteRef}></MusicNote>
       </Container>
     </CSSTransition>
   )
-};
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Album));

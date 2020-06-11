@@ -8,7 +8,6 @@ import {
   List
 } from './style';
 
-const lazyImg = require('@/assets/img/music.png');
 function RecommendList (props) {
 
   const enterDetail = (id) => {
@@ -29,7 +28,7 @@ function RecommendList (props) {
                 <div className="img_wrapper">
                   <div className="decorate"></div>
                     <LazyLoad
-                      placeholder={<img width="100%" height="100%" src={lazyImg}/>}
+                      placeholder={<img width="100%" height="100%" src={require('./music.png')}/>}
                     >
                       <img src={item.picUrl + "?param=300x300"} width="100%" height="100%" alt="music"/>
                     </LazyLoad>

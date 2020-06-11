@@ -57,10 +57,8 @@ function Singers(props) {
   };
 
   const enterDetail = (id) => {
-    props.history.push(`/singer/${id}`);
+    props.history.push(`/singers/${id}`);
   };
-
-  const lazyImg = require('@/assets/img/singer.png');
 
   const renderSingerList = () => {
     const list = singerList ? singerList.toJS(): [];
@@ -74,7 +72,7 @@ function Singers(props) {
                 onClick={() => enterDetail(item.id)}
               >
                 <div className="img_wrapper">
-                  <LazyLoad placeholder={<img width="100%" height="100%" src={`${list[0].picUrl}?300x300`} alt="music"/>}>
+                  <LazyLoad placeholder={<img width="100%" height="100%" src={require('./singer.png')} alt="music"/>}>
                     <img src={`${item.picUrl}?param=300x300`} width="100%" height="100%" alt="music"/>
                   </LazyLoad>
                 </div>

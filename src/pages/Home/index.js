@@ -6,6 +6,7 @@ import {
   TabItem,
 } from './style';
 import { NavLink } from 'react-router-dom';// 利用 NavLink 组件进行路由跳转
+import Player from '@/pages/Player';
 
 function Home(props) {
   const { route } = props;
@@ -15,7 +16,10 @@ function Home(props) {
       <Top>
         <span className="iconfont menu">&#xe65c;</span>
         <span className="title">WebApp</span>
-        <span className="iconfont search">&#xe62b;</span>
+        <span
+          className="iconfont search"
+          onClick={() => props.history.push ('/search')}
+        >&#xe62b;</span>
       </Top>
       <Tab>
         <NavLink to="/recommend" activeClassName="selected"><TabItem><span > 推荐 </span></TabItem></NavLink>
@@ -23,6 +27,7 @@ function Home(props) {
         <NavLink to="/rank" activeClassName="selected"><TabItem><span > 排行榜 </span></TabItem></NavLink>
       </Tab>
       { renderRoutes(route.routes) }
+      <Player></Player>
     </div>
   )
 }
